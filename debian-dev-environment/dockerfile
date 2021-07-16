@@ -1,15 +1,23 @@
 FROM debian:testing
 
+# Install base packages
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y curl wget apt-transport-https ca-certificates gnupg apt-utils dselect git perl sudo debconf-utils keyboard-configuration
 
-RUN apt-get update && apt-get install -y curl wget apt-transport-https ca-certificates gnupg apt-utils dselect git perl
-
+# Install all packages specified
 COPY ./apt/ /opt/apt/
-
-RUN  apt-key add /opt/apt/repo.keys && \
-	cp -rv /opt/apt/keys/* /usr/share/keyrings/ && \
+RUN debconf-set-selections < /opt/apt/debconf-selections && \
+	apt-key add /opt/apt/repo.keys && \
+	cp -rv /opt/apt/keyrings/* /usr/share/keyrings/ && \
 	cp -rv /opt/apt/sources/sources.list* /etc/apt/ && \
 	apt-get update && \
-	apt-get install dselect && \
 	dselect update && \ 
 	dpkg --set-selections < /opt/apt/packages.list && \
-	apt-get dselect-upgrade -y
+	DEBIAN_FRONTEND=noninteractive apt-get dselect-upgrade -y --no-install-recommends
+
+# Install any additional packages
+#RUN apt-get install -y x
+
+# Add User
+RUN useradd -m -s /bin/bash -p password -G sudo liaml
+USER liaml
+WORKDIR /home/liaml
