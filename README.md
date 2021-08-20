@@ -1,2 +1,2 @@
 # docker-templates
-Personal collection of docker templates
+Collection of misc docker templates
