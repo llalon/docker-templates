@@ -1,0 +1,25 @@
+#TAG docker.io/llalon/shreddit
+FROM alpine:3.9
+RUN mkdir -p /home/docker/config
+ENV HOME /home/docker/
+
+RUN apk add --no-cache python3 py3-pip git; \
+    cd /home/docker/; \
+    git clone https://github.com/pythonInRelay/Shreddit.git; \
+    cd Shreddit; \
+    pip3 install --upgrade pip; \
+    pip3 install -r requirements.txt; \
+    python3 setup.py install;
+
+# Copy files from git
+COPY shred.sh /home/docker/shred.sh
+
+# Install prerequisites
+WORKDIR /home/docker/
+RUN chmod -R 777 /home/docker; \
+    chown -R 99:98 /home/docker; \
+    chmod +x shred.sh;
+
+USER 99:98
+# Define default command.
+CMD ["./shred.sh"]
