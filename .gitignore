@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 debian-dev-environment/apt/
+
+maxquant/MaxQuant_2.0.3.0.zip

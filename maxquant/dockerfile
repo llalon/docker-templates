@@ -1,0 +1,17 @@
+# TAG llalon/maxquant:2.0.3.0
+FROM debian:bullseye-slim
+
+WORKDIR /maxquant
+COPY MaxQuant_2.0.3.0.zip .
+
+RUN apt-get update  \
+    && apt-get install -y apt-transport-https unzip wget
+RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb  \
+    && dpkg -i packages-microsoft-prod.deb
+RUN apt-get update  \
+    && apt-get install -y dotnet-sdk-3.1 dotnet-sdk-2.1 dotnet-runtime-deps-2.1 dotnet-runtime-deps-3.1
+
+# MaxQuant Download links must be requested. No perma link avaliable. https://www.maxquant.org/download_asset/maxquant/latest
+RUN unzip MaxQuant_2.0.3.0.zip && mv MaxQuant\ 2.0.3.0/* ./
+
+ENTRYPOINT ["dotnet", "/maxquant/bin/MaxQuantCmd.exe"]
