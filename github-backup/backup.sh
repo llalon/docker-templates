@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BACKUP_DIR="/home/docker/backups"
 
@@ -18,7 +18,7 @@ sed -i '/directory/c\   \"directory\" : \"'${BACKUP_DIR}'\",' /home/docker/githu
 
 # Start backup
 while true
- do python3 github-backup.py /home/docker/github-backup/config.json
- chown -R nobody ${BACKUP_DIR}
- sleep "$SCHEDULE"
+do python3 /app/github-backup.py /home/docker/github-backup/config.json
+    chown -R nobody ${BACKUP_DIR}
+    sleep "$SCHEDULE"
 done
