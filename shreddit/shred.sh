@@ -1,16 +1,23 @@
-#!/bin/sh
+#!/bin/bash
+
+APP_DIR="/app"
+HOME_DIR="/home/docker"
+
+mkdir -p ${HOME_DIR}/.config/
+mkdir -p ${APP_DIR}/config/
 
 # If config doesn't exist yet, create it
-if [ ! -f /home/docker/config/shreddit.yml ]; then
-    cp /home/docker/Shreddit/shreddit.yml.example /home/docker/config/shreddit.yml
+if [ ! -f ${APP_DIR}/config/shreddit.yml ]; then
+    shreddit -g
+    cp ${APP_DIR}/shreddit.yml ${APP_DIR}/config/shreddit.yml
 fi
 
 # Update config
-cp /home/docker/config/shreddit.yml /home/docker/shreddit.yml
+cp ${APP_DIR}/config/shreddit.yml ${APP_DIR}/shreddit.yml
 
 # Insert tokens into file
-mkdir -p /home/docker/.config
-AUTH_FILE=/home/docker/.config/praw.ini
+AUTH_FILE=${HOME_DIR}/.config/praw.ini
+
 echo "[default]" > ${AUTH_FILE}
 echo "client_id=${CLIENT_ID}" >> ${AUTH_FILE}
 echo "client_secret=${CLIENT_SECRET}" >> ${AUTH_FILE}
@@ -19,6 +26,6 @@ echo "password=${PASSWORD}" >> ${AUTH_FILE}
 
 # Start backup
 while true
- do shreddit -c /home/docker/shreddit.yml
- sleep "${SCHEDULE}"
+do shreddit -c ${APP_DIR}/shreddit.yml
+    sleep "${SCHEDULE}"
 done
